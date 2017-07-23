@@ -30,7 +30,7 @@ EXPOSE 9000
 VOLUME [ "/configurations" ]
 
 # Setup opcache file cache directory
-RUN mkdir /data/opcache \
+RUN mkdir -p /data/opcache \
     && chown -R www-data:www-data /data/opcache \
     && chmod -R 774 /data/opcache
 
@@ -55,7 +55,8 @@ RUN rm -rf /var/lib/apt/lists/*
 
 # Setup server document root and home directories
 RUN chown www-data:www-data /var/www/html \
-    chown www-data:www-data /home/www-data
+    && mkdir /home/www-data \
+    && chown www-data:www-data /home/www-data
 
 # Disable default configuration files of the parent image
 RUN mv /etc/ssmtp/ssmtp.conf /etc/ssmtp/ssmtp.conf.bak
