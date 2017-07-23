@@ -24,13 +24,14 @@
 ###
 
 # Create configuration files using environment variables if auto configuration is enabled and configuration files are not found
+# Symbolic links are then created from known configuration files at /configurations directory to their original locations
 if [ "$AUTO_CONFIGURE" == "enable" ]; then
 	echo "AUTO_CONFIGURE enabled, starting auto configuration."	
 	# Limit environment variables to substitute
 	SHELL_FORMAT='$CONTAINER_NAME,$DOMAIN_NAME,$SSMTP_MAILHUB'
 	
 	# Check if the required environment variables are set and create configuration files
-	if [ ! -z "$CONTAINER_NAME" ] && [ ! -z "$DOMAIN_NAME" ] && [ ! -z "$SSMTP_MAILHUB" ]; then 
+	if [ "$CONTAINER_NAME" ] && [ "$DOMAIN_NAME" ] && [ "$SSMTP_MAILHUB" ]; then 
 		# Check if /configurations/php.ini configuration file already exists/mounted
 		if [ ! -f /configurations/php.ini ]; then
 			echo "Creating configuration file '/configurations/php.ini' from template."
@@ -65,21 +66,27 @@ if [ "$AUTO_CONFIGURE" == "enable" ]; then
 	# Create symbolic links for configuration files
 	
 	# Create symbolic link for configuration file '/configurations/php.ini' to real location
-	if [ -f /configurations/php.ini ] && [ ! -f /usr/local/etc/php/conf.d/php.ini ]; then
+	if [ ! -f /usr/local/etc/php/conf.d/php.ini ]; then
 		echo "Creating symbolic link for configuration file '/configurations/php.ini' to '/usr/local/etc/php/conf.d/php.ini'"
 		ln -s /configurations/php.ini /usr/local/etc/php/conf.d/php.ini
+	elif [ ! -L /usr/local/etc/php/conf.d/php.ini ]; then
+		echo "Warning: The file '/usr/local/etc/php/conf.d/php.ini' is not a symbolic link created by AUTO_CONFIGURE. You can delete the file if you want to create symbolic link on next startup."
 	fi
 
 	# Create symbolic link for configuration file '/configurations/php-fpm-www.conf' to real location
-	if [ -f /configurations/php-fpm-www.conf ] && [ ! -f /usr/local/etc/php-fpm.d/php-fpm-www.conf ]; then
+	if [ ! -f /usr/local/etc/php-fpm.d/php-fpm-www.conf ]; then
 		echo "Creating symbolic link for configuration file '/configurations/php-fpm-www.conf' to '/usr/local/etc/php-fpm.d/php-fpm-www.conf'"
 		ln -s /configurations/php-fpm-www.conf /usr/local/etc/php-fpm.d/php-fpm-www.conf
+	elif [ ! -L /usr/local/etc/php-fpm.d/php-fpm-www.conf ]; then
+		echo "Warning: The file '/usr/local/etc/php-fpm.d/php-fpm-www.conf' is not a symbolic link created by AUTO_CONFIGURE. You can delete the file if you want to create symbolic link on next startup."
 	fi
 
 	# Create symbolic link for configuration file '/configurations/ssmtp.conf' to real location
-	if [ -f /configurations/ssmtp.conf ] && [ ! -f /etc/ssmtp/ssmtp.conf ]; then
+	if [ ! -f /etc/ssmtp/ssmtp.conf ]; then
 		echo "Creating symbolic link for configuration file '/configurations/ssmtp.conf' to '/etc/ssmtp/ssmtp.conf'"
 		ln -s /configurations/ssmtp.conf /etc/ssmtp/ssmtp.conf
+	elif [ ! -L /etc/ssmtp/ssmtp.conf ]; then
+		echo "Warning: The file '/etc/ssmtp/ssmtp.conf' is not a symbolic link created by AUTO_CONFIGURE. You can delete the file if you want to create symbolic link on next startup."
 	fi	
 	echo "AUTO_CONFIGURE completed."
 else

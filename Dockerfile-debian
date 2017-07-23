@@ -2,14 +2,14 @@
 # vkucukcakar/php-fpm
 # PHP-FPM Docker image with automatic configuration file creation and export
 # Copyright (c) 2017 Volkan Kucukcakar
-# 
+#
 # This file is part of vkucukcakar/php-fpm.
-# 
+#
 # vkucukcakar/php-fpm is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # vkucukcakar/php-fpm is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -17,11 +17,11 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-# 
+#
 # This copyright notice and license must be retained in all files and derivative works.
 ###
 
-FROM php:7.1.5-fpm
+FROM php:7.1.7-fpm
 
 LABEL maintainer "Volkan Kucukcakar"
 
@@ -30,11 +30,11 @@ EXPOSE 9000
 VOLUME [ "/configurations" ]
 
 # Setup opcache file cache directory
-RUN mkdir /home/.opcache \
-	&& chown -R www-data:www-data /home/.opcache \
-	&& chmod -R 774 /home/.opcache
+RUN mkdir /data/opcache \
+    && chown -R www-data:www-data /data/opcache \
+    && chmod -R 774 /data/opcache
 
-# Install common php extensions	
+# Install common php extensions
 RUN apt-get update -q  && apt-get install -y \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
@@ -46,23 +46,24 @@ RUN apt-get update -q  && apt-get install -y \
 
 # Install gettext-base (for envsubst command) that will be required by entrypoint later
 RUN apt-get install -y gettext-base
-    
+
 # Install ssmtp
 RUN apt-get install -y ssmtp
 
 # Clean up the apt cache
 RUN rm -rf /var/lib/apt/lists/*
 
+# Setup server document root and home directories
+RUN chown www-data:www-data /var/www/html \
+    chown www-data:www-data /home/www-data
+
 # Disable default configuration files of the parent image
 RUN mv /etc/ssmtp/ssmtp.conf /etc/ssmtp/ssmtp.conf.bak
 RUN mv /usr/local/etc/php-fpm.d/www.conf /usr/local/etc/php-fpm.d/www.conf.bak
 #RUN mv /usr/local/etc/php/conf.d/php.ini /usr/local/etc/php/conf.d/php.ini.bak; exit 0
 
-
 # Copy template configuration files
-COPY templates/php-fpm-www.conf /templates/php-fpm-www.conf
-COPY templates/php.ini /templates/php.ini
-COPY templates/ssmtp.conf /templates/ssmtp.conf
+COPY templates /templates
 
 # Create sessions directory and set correct permissions
 RUN mkdir /sessions \

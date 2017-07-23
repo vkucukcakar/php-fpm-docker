@@ -2,14 +2,14 @@
 # vkucukcakar/php-fpm
 # PHP-FPM Docker image with automatic configuration file creation and export
 # Copyright (c) 2017 Volkan Kucukcakar
-# 
+#
 # This file is part of vkucukcakar/php-fpm.
-# 
+#
 # vkucukcakar/php-fpm is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # vkucukcakar/php-fpm is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -17,11 +17,11 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-# 
+#
 # This copyright notice and license must be retained in all files and derivative works.
 ###
 
-FROM php:7.1.5-fpm-alpine
+FROM php:7.1.7-fpm-alpine
 
 LABEL maintainer "Volkan Kucukcakar"
 
@@ -31,9 +31,9 @@ VOLUME [ "/configurations" ]
 
 
 # Setup opcache file cache directory
-RUN mkdir /home/.opcache \
-	&& chown -R www-data:www-data /home/.opcache \
-	&& chmod -R 774 /home/.opcache
+RUN mkdir /data/opcache \
+    && chown -R www-data:www-data /data/opcache \
+    && chmod -R 774 /data/opcache
 
 # Install common php extensions
 RUN apk add --update \
@@ -48,29 +48,30 @@ RUN apk add --update \
     && docker-php-ext-enable opcache.so \
     && apk del binutils
 # Note: binutils is currently required in Alpine image as "docker-php-ext-enable" in official PHP image contains "nm" command which is not found in Alpine
-    
+
 # Install bash (for basic level of shell compatibility) that will be required by entrypoint later
 RUN apk add bash
 
 # Install gettext (for envsubst command) that will be required by entrypoint later
 RUN apk add gettext
-    
+
 # Install ssmtp
 RUN apk add ssmtp
 
 # Clean up the apk cache
 RUN rm -rf /var/cache/apk/*
 
+# Setup server document root and home directories
+RUN chown www-data:www-data /var/www/html \
+    chown www-data:www-data /home/www-data
+
 # Disable default configuration files of the parent image
 RUN mv /etc/ssmtp/ssmtp.conf /etc/ssmtp/ssmtp.conf.bak
 RUN mv /usr/local/etc/php-fpm.d/www.conf /usr/local/etc/php-fpm.d/www.conf.bak
 #RUN mv /usr/local/etc/php/conf.d/php.ini /usr/local/etc/php/conf.d/php.ini.bak; exit 0
 
-
 # Copy template configuration files
-COPY templates/php-fpm-www.conf /templates/php-fpm-www.conf
-COPY templates/php.ini /templates/php.ini
-COPY templates/ssmtp.conf /templates/ssmtp.conf
+COPY templates /templates
 
 # Create sessions directory and set correct permissions
 RUN mkdir /sessions \
