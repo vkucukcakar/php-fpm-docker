@@ -89,6 +89,38 @@ if [ "$AUTO_CONFIGURE" == "enable" ]; then
 		echo "Warning: The file '/etc/ssmtp/ssmtp.conf' is not a symbolic link created by AUTO_CONFIGURE. You can delete the file if you want to create symbolic link on next startup."
 	fi	
 	echo "AUTO_CONFIGURE completed."
+	
+    # Change uid of default user www-data. You can make this match your current uid (id -u) on host to easily access mounted volumes for development.
+	if [ "$CHANGE_UID" ]; then
+		echo "Changing uid of default user www-data to ${CHANGE_UID}"
+		usermod -u ${CHANGE_UID} www-data
+	fi	
+
+    # Change gid of default group www-data. You can make this match your current gid (id -g) on host for development.
+	if [ "$CHANGE_GID" ]; then
+		echo "Changing gid of default group www-data to ${CHANGE_GID}"
+		groupmod -g ${CHANGE_GID} www-data
+	fi	
+
+	# Change owner of /var/www/html and some special directories (/data/opcache, /sessions, /home/www-data) recursively to "www-data:www-data".
+	# As the default user is www-data and it is already used in PHP-FPM configuration files, this will solve PHP permission errors for development.
+	# This also affects the directories and files at host if you mount volumes. Will also be enabled if CHANGE_UID or CHANGE_GID is set.
+	# *** Must be executed after usermod and groupmod since owner and groups do not change automatically after
+	#     usermod and groupmod except the files/directories "inside" user's home
+	if [ "$CHANGE_UID" ] || [ "$CHANGE_GID" ] || [ "$CHANGE_OWNER"=="enable" ]; then
+		# Change owner of /var/www/html
+		echo "Changing owner of /var/www/html recursively to www-data:www-data"
+		chown -R www-data:www-data /var/www/html
+		# Change owner of /data/opcache
+		echo "Changing owner of /data/opcache recursively to www-data:www-data"
+		chown -R www-data:www-data /data/opcache		
+		# Change owner of /sessions
+		echo "Changing owner of /sessions recursively to www-data:www-data"
+		chown -R www-data:www-data /sessions		
+		# Change owner of /home/www-data
+		echo "Changing owner of /home/www-data recursively to www-data:www-data"
+		chown -R www-data:www-data /home/www-data
+	fi
 else
 	echo "AUTO_CONFIGURE disabled."
 fi

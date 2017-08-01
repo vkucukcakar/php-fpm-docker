@@ -50,6 +50,8 @@ RUN apt-get install -y gettext-base
 # Install ssmtp
 RUN apt-get install -y ssmtp
 
+# usermod already installed on Debian
+
 # Clean up the apt cache
 RUN rm -rf /var/lib/apt/lists/*
 
@@ -68,7 +70,7 @@ COPY templates /templates
 
 # Create sessions directory and set correct permissions
 RUN mkdir /sessions \
-    && chown www-data /sessions
+    && chown www-data:www-data /sessions
 
 # Setup entrypoint
 COPY common/entrypoint.sh /entrypoint.sh

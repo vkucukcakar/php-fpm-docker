@@ -58,6 +58,11 @@ RUN apk add gettext
 # Install ssmtp
 RUN apk add ssmtp
 
+# Install shadow package (for usermod command)
+# TODO: Remove the next line after updating to PHP 7.2.x stable, since it is already build from Alpine 3.6
+RUN echo http://dl-cdn.alpinelinux.org/alpine/v3.6/community >> /etc/apk/repositories \
+    && apk add --update shadow
+
 # Clean up the apk cache
 RUN rm -rf /var/cache/apk/*
 
@@ -75,7 +80,7 @@ COPY templates /templates
 
 # Create sessions directory and set correct permissions
 RUN mkdir /sessions \
-    && chown www-data /sessions
+    && chown www-data:www-data /sessions
 
 # Setup entrypoint
 COPY common/entrypoint.sh /entrypoint.sh

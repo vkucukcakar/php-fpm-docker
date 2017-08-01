@@ -8,4 +8,10 @@
 
 - Updated parent image to PHP 7.1.7
 - Fixed some directory owners/permissions
-- Small fixes
+- Minor fixes
+
+## v1.0.2
+
+- Added functionality to fix permission related problems for some conditions
+- Added CHANGE_OWNER, CHANGE_UID, CHANGE_GID environment variables (See README.md)
+- Minor fixes
