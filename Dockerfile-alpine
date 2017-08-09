@@ -21,7 +21,7 @@
 # This copyright notice and license must be retained in all files and derivative works.
 ###
 
-FROM php:7.1.7-fpm-alpine
+FROM php:7.1.8-fpm-alpine
 
 LABEL maintainer "Volkan Kucukcakar"
 
