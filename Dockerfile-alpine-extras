@@ -21,7 +21,7 @@
 # This copyright notice and license must be retained in all files and derivative works.
 ###
 
-FROM php:7.2.2-fpm-stretch
+FROM php:7.2.2-fpm-alpine
 
 LABEL maintainer "Volkan Kucukcakar"
 
@@ -35,26 +35,42 @@ RUN mkdir -p /data/opcache \
     && chmod -R 774 /data/opcache
 
 # Install/enable common php extensions: gd iconv mbstring mysqli pdo pdo_mysql
-RUN apt-get update -q  && apt-get install -y \
-        libfreetype6-dev \
-        libjpeg62-turbo-dev \
+RUN apk add --update \
+        freetype-dev \
+        libjpeg-turbo-dev \
         libpng-dev \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install -j$(nproc) gd iconv mbstring mysqli pdo pdo_mysql \
+    && NPROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) \
+    && docker-php-ext-install -j${NPROC} gd iconv mbstring mysqli pdo pdo_mysql \
     && docker-php-ext-enable opcache.so \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/cache/apk/*
 
-# Install gettext-base (for envsubst command) that will be required by entrypoint later
+# Install extra php extensions: bcmath, bz2, imap, soap, sockets, shmop, xmlrpc
+RUN apk add --update bzip2-dev imap-dev libxml2-dev \
+    && docker-php-ext-install bcmath bz2 imap soap sockets shmop xmlrpc \
+    && rm -rf /var/cache/apk/*
+
+# Install extra pecl extensions: apcu, apcu_bc*, imagick, redis
+# TODO: apcu_bc-1.0.3 seems to have problems and temporarily disabled. Check again.
+RUN apk add --update --no-cache autoconf build-base imagemagick-dev libtool \
+    && yes '' | pecl install apcu imagick redis \
+    && docker-php-ext-enable apcu imagick redis \
+    && apk del autoconf build-base \
+    && rm -rf /var/cache/apk/*
+
+# Install bash (for basic level of shell compatibility) that will be required by entrypoint later
+# Install gettext (for envsubst command) that will be required by entrypoint later
 # Install ssmtp
-# usermod already installed on Debian
-RUN apt-get update -q  && apt-get install -y \
-        gettext-base \
+# Install shadow package (for usermod command)
+RUN apk add --update \
+        bash \
+        gettext \
         ssmtp \
-    && rm -rf /var/lib/apt/lists/*
+        shadow \
+    && rm -rf /var/cache/apk/*
 
 # Setup server document root and home directories
 RUN chown www-data:www-data /var/www/html \
-    && mkdir /home/www-data \
     && chown www-data:www-data /home/www-data
 
 # Disable default configuration files of the parent image
