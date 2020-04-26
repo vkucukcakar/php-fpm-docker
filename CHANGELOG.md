@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.1.0
+- Upgraded parent images to official PHP 7.4 current stable image
+- Moved Debian related files to "legacy" folder for documentary purposes
+
 ## v1.0.4
 - Upgraded parent image to official PHP 7.2.2 current stable image
 - Removed mcrypt extension which is declared abandonware, deprecated in PHP 7.1 and removed from PHP 7.2 core
