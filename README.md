@@ -10,8 +10,9 @@ PHP-FPM Docker image with automatic configuration file creation and export
 
 ## Supported tags
 
-* alpine, latest
-* alpine-extras
+* latest (Alpine based)
+* latest-extras (Alpine based)
+* Some version based tags may be available, please see tags section on Docker Hub
 
 ## Environment variables supported
 

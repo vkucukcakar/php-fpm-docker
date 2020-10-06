@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.2.0
+
+- Dockerfile-alpine and Dockerfile-alpine-extras files renamed as Dockerfile and Dockerfile-extras respectively
+- alpine and alpine-extras tags will not be used on Docker Hub, the images are only Alpine based
+
 ## v1.1.0
 - Upgraded parent images to official PHP 7.4 current stable image
 - Moved Debian related files to "legacy" folder for documentary purposes
