@@ -17,7 +17,7 @@ PHP-FPM Docker image with automatic configuration file creation and export
 ## Environment variables supported
 
 * AUTO_CONFIGURE=[enable|disable]
-	Enable automatic configuration file creation
+    Enable automatic configuration file creation
 * CONTAINER_NAME=[example-com-php]
 	Current container name
 * DOMAIN_NAME=[example.com]
