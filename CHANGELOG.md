@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.3.0
+
+- Added support for exif and zip extensions in Dockerfile-extras
+- Fixed possible PHP container to web server http connection (remote fopen etc.) problems especially on development environments
+- Added support for SERVER_INTERNAL_HOSTNAME and SERVER_INTERNAL_IP variables
+
 ## v1.2.0
 
 - Dockerfile-alpine and Dockerfile-alpine-extras files renamed as Dockerfile and Dockerfile-extras respectively

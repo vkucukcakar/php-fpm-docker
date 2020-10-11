@@ -57,7 +57,30 @@ if [ "$AUTO_CONFIGURE" == "enable" ]; then
 			envsubst "$SHELL_FORMAT" < /templates/ssmtp.conf > /configurations/ssmtp.conf
 		else
 			echo "Configuration file '/configurations/ssmtp.conf' already exists, skipping file creation. You can edit the file according to your needs."
-		fi		
+		fi
+
+		# Add internal IP of web server and DOMAIN_NAME to /etc/hosts file to fix possible PHP container to web server http connection (remote fopen etc.) problems especially on development environments
+		# Use SERVER_INTERNAL_HOSTNAME variable to specify web server internal hostname* or SERVER_INTERNAL_IP to specify web server internal IP*
+		# * Use hostname or IP address of reverse proxy instead of upstream web server if you run a reverse proxy.
+		# ** i.e.: You are trying to develop your local copy of example.com.
+		#          You set 127.0.0.1 example.com on /etc/hosts file of host computer and you are using bridged network configuration on Docker for isolation.
+		#          If you run the PHP command fopen("http://www.example.com/"); then PHP will go to the real example.com, not the one you hosted for development.
+		#          On the other hand, if you do the same thing with a non-existent domain name, PHP simply won't connect to you development web server. 
+		if [ "$SERVER_INTERNAL_HOSTNAME" ]; then
+			_RESOLVE_IP=$(getent hosts ${SERVER_INTERNAL_HOSTNAME} | awk '{ print $1 }')
+			if [ "$_RESOLVE_IP" ]; then
+				echo -e "\n${_RESOLVE_IP} ${DOMAIN_NAME}" >>/etc/hosts
+			else
+				echo "Warning: Cannot resolve SERVER_INTERNAL_HOSTNAME"
+			fi	
+		else
+			if [ "$SERVER_INTERNAL_IP" ]; then
+				echo -e "\n${SERVER_INTERNAL_IP} ${DOMAIN_NAME}" >>/etc/hosts
+			else
+				echo "Warning: Internal web server hostname/IP is not defined, you may experience PHP to web server connection and ambiguity problems. Please use SERVER_INTERNAL_HOSTNAME or SERVER_INTERNAL_IP variable."
+			fi
+		fi	
+		
 	else
 		echo "Error: One or more environment variable required for AUTO_CONFIGURE is not set, please check: CONTAINER_NAME, DOMAIN_NAME, SSMTP_MAILHUB"
 		exit 1

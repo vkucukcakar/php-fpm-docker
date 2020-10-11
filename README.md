@@ -24,6 +24,10 @@ PHP-FPM Docker image with automatic configuration file creation and export
 	Current domain name
 * SSMTP_MAILHUB=[server-mta]
 	Smtp container hostname
+* SERVER_INTERNAL_HOSTNAME=[server-proxy]
+	Web server (or reverse proxy) internal hostname. Specified to fix possible PHP container to web server http connection (remote fopen etc.) problems especially on development environments
+* SERVER_INTERNAL_IP=[""]
+	Web server (or reverse proxy) internal IP. Do not use if SERVER_INTERNAL_HOSTNAME is used
 * CHANGE_OWNER=[enable|disable]
 	Change owner of /var/www/html and some special directories (/data/opcache, /sessions, /home/www-data) recursively to "www-data:www-data".
 	As the default user is www-data and it is already used in PHP-FPM configuration files, this will solve PHP permission errors for development.

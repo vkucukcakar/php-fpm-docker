@@ -46,9 +46,9 @@ RUN apk add --update \
     && docker-php-ext-enable opcache.so \
     && rm -rf /var/cache/apk/*
 
-# Install extra php extensions: bcmath, bz2, imap, soap, sockets, shmop, xmlrpc
-RUN apk add --update bzip2-dev imap-dev libxml2-dev \
-    && docker-php-ext-install bcmath bz2 imap soap sockets shmop xmlrpc \
+# Install extra php extensions: bcmath, bz2, imap, soap, sockets, shmop, xmlrpc, exif, zip
+RUN apk add --update bzip2-dev imap-dev libxml2-dev libzip-dev \
+    && docker-php-ext-install bcmath bz2 imap soap sockets shmop xmlrpc exif zip\
     && rm -rf /var/cache/apk/*
 
 # Install extra pecl extensions: apcu, apcu_bc*, imagick, redis
