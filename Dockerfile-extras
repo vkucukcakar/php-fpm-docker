@@ -86,9 +86,12 @@ COPY templates /templates
 RUN mkdir /sessions \
     && chown www-data:www-data /sessions
 
+# Copy defer-edit-hosts.sh script
+COPY common/defer-edit-hosts.sh /defer-edit-hosts.sh
+RUN chmod +x /defer-edit-hosts.sh
+
 # Setup entrypoint
 COPY common/entrypoint.sh /entrypoint.sh
-COPY common/defer-edit-hosts.sh /defer-edit-hosts.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 # Set CMD again, CMD is not inherited from parent if ENTRYPOINT is set
