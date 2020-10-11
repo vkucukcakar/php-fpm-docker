@@ -88,6 +88,7 @@ RUN mkdir /sessions \
 
 # Setup entrypoint
 COPY common/entrypoint.sh /entrypoint.sh
+COPY common/defer-edit-hosts.sh /defer-edit-hosts.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 # Set CMD again, CMD is not inherited from parent if ENTRYPOINT is set

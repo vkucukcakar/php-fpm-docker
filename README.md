@@ -25,7 +25,8 @@ PHP-FPM Docker image with automatic configuration file creation and export
 * SSMTP_MAILHUB=[server-mta]
 	Smtp container hostname
 * SERVER_INTERNAL_HOSTNAME=[server-proxy]
-	Web server (or reverse proxy) internal hostname. Specified to fix possible PHP container to web server http connection (remote fopen etc.) problems especially on development environments
+	Web server (or reverse proxy) internal hostname. Specified to fix possible PHP container to web server http connection (remote fopen etc.) problems especially on development environments.
+	This value is resolved to IP address (or deferred if not currently resolved) and written to /etc/hosts as the address of DOMAIN_NAME.
 * SERVER_INTERNAL_IP=[""]
 	Web server (or reverse proxy) internal IP. Do not use if SERVER_INTERNAL_HOSTNAME is used
 * CHANGE_OWNER=[enable|disable]

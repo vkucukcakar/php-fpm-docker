@@ -69,9 +69,12 @@ if [ "$AUTO_CONFIGURE" == "enable" ]; then
 		if [ "$SERVER_INTERNAL_HOSTNAME" ]; then
 			_RESOLVE_IP=$(getent hosts ${SERVER_INTERNAL_HOSTNAME} | awk '{ print $1 }')
 			if [ "$_RESOLVE_IP" ]; then
-				echo -e "\n${_RESOLVE_IP} ${DOMAIN_NAME}" >>/etc/hosts
+				echo -e "\n${_RESOLVE_IP} ${DOMAIN_NAME}" >>/etc/hosts				
 			else
-				echo "Warning: Cannot resolve SERVER_INTERNAL_HOSTNAME"
+				# Web server or proxy may not be started currently, defer editing /etc/hosts 
+				echo "Notice: SERVER_INTERNAL_HOSTNAME (${SERVER_INTERNAL_HOSTNAME}) is currently unresolvable. Deferred editing /etc/hosts, will continuously try until it is done."
+				#nohup /defer-edit-hosts.sh ${SERVER_INTERNAL_HOSTNAME} ${DOMAIN_NAME} >/dev/null 2>&1 &
+				nohup /defer-edit-hosts.sh ${SERVER_INTERNAL_HOSTNAME} ${DOMAIN_NAME} &
 			fi	
 		else
 			if [ "$SERVER_INTERNAL_IP" ]; then
