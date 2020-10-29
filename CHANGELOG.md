@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.4.0
+
+- Fixed a configuration directive in template that cause php file changes take effect late (Existing configurations must be re-created or manually fixed by changing php_admin_value[opcache.revalidate_freq] = 2 )
+- Fixed php_admin_value[opcache.validate_timestamps], php_admin_value[opcache.revalidate_freq] in configuration template php-fpm-www.conf
+- Changed some opcache defaults related with performance and memory consumption in configuration template php-fpm-www.conf
+
 ## v1.3.0
 
 - Added support for exif and zip extensions in Dockerfile-extras
