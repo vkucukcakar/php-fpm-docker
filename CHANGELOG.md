@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.4.1
+
+- Fixed main Dockerfile not installing the add hosts script (related to SERVER_INTERNAL_HOSTNAME) correctly
+
 ## v1.4.0
 
 - Fixed a configuration directive in template that cause php file changes take effect late (Existing configurations must be re-created or manually fixed by changing php_admin_value[opcache.revalidate_freq] = 2 )
