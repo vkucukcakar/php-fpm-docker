@@ -59,29 +59,9 @@ if [ "$AUTO_CONFIGURE" == "enable" ]; then
 			echo "Configuration file '/configurations/ssmtp.conf' already exists, skipping file creation. You can edit the file according to your needs."
 		fi
 
-		# Add internal IP of web server and DOMAIN_NAME to /etc/hosts file to fix possible PHP container to web server http connection (remote fopen etc.) problems especially on development environments
-		# Use SERVER_INTERNAL_HOSTNAME variable to specify web server internal hostname* or SERVER_INTERNAL_IP to specify web server internal IP*
-		# * Use hostname or IP address of reverse proxy instead of upstream web server if you run a reverse proxy.
-		# ** i.e.: You are trying to develop your local copy of example.com.
-		#          You set 127.0.0.1 example.com on /etc/hosts file of host computer and you are using bridged network configuration on Docker for isolation.
-		#          If you run the PHP command fopen("http://www.example.com/"); then PHP will go to the real example.com, not the one you hosted for development.
-		#          On the other hand, if you do the same thing with a non-existent domain name, PHP simply won't connect to you development web server. 
-		if [ "$SERVER_INTERNAL_HOSTNAME" ]; then
-			_RESOLVE_IP=$(getent hosts ${SERVER_INTERNAL_HOSTNAME} | awk '{ print $1 }')
-			if [ "$_RESOLVE_IP" ]; then
-				echo -e "\n${_RESOLVE_IP} ${DOMAIN_NAME}" >>/etc/hosts				
-			else
-				# Web server or proxy may not be started currently, defer editing /etc/hosts 
-				echo "Notice: SERVER_INTERNAL_HOSTNAME (${SERVER_INTERNAL_HOSTNAME}) is currently unresolvable. Deferred editing /etc/hosts, will continuously try until it is done."
-				#nohup /defer-edit-hosts.sh ${SERVER_INTERNAL_HOSTNAME} ${DOMAIN_NAME} >/dev/null 2>&1 &
-				nohup /defer-edit-hosts.sh ${SERVER_INTERNAL_HOSTNAME} ${DOMAIN_NAME} &
-			fi	
-		else
-			if [ "$SERVER_INTERNAL_IP" ]; then
-				echo -e "\n${SERVER_INTERNAL_IP} ${DOMAIN_NAME}" >>/etc/hosts
-			else
-				echo "Warning: Internal web server hostname/IP is not defined, you may experience PHP to web server connection and ambiguity problems. Please use SERVER_INTERNAL_HOSTNAME or SERVER_INTERNAL_IP variable."
-			fi
+		# Removed variables
+		if [ "$SERVER_INTERNAL_HOSTNAME" ] || [ "$SERVER_INTERNAL_IP" ]; then
+			echo "Warning: SERVER_INTERNAL_HOSTNAME and SERVER_INTERNAL_IP variables removed. Please use network aliases for your server container."
 		fi	
 		
 	else

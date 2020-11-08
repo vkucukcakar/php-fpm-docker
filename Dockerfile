@@ -73,10 +73,6 @@ COPY templates /templates
 RUN mkdir /sessions \
     && chown www-data:www-data /sessions
 
-# Copy defer-edit-hosts.sh script
-COPY common/defer-edit-hosts.sh /defer-edit-hosts.sh
-RUN chmod +x /defer-edit-hosts.sh
-
 # Setup entrypoint
 COPY common/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh

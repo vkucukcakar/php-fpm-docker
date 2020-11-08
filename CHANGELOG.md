@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.5.0
+
+- Removed SERVER_INTERNAL_HOSTNAME and SERVER_INTERNAL_IP (Please use network aliases for your server container)
+
 ## v1.4.1
 
 - Fixed main Dockerfile not installing the add hosts script (related to SERVER_INTERNAL_HOSTNAME) correctly
