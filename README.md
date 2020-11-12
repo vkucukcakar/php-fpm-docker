@@ -4,9 +4,9 @@ PHP-FPM Docker image with automatic configuration file creation and export
 
 * Based on official PHP-FPM Docker image
 * Automatic configuration creates well-commented configuration files using environment variables or use configuration files at volume "/configurations"
-* Installed and enabled some common extensions (gd iconv mbstring mysqli pdo pdo_mysql opcache)
-* Installed and enabled some extra extensions in alpine-extras image (bcmath, bz2, imap, soap, sockets, shmop, xmlrpc, apcu, imagick, redis)
-* Included ssmtp for mail relay
+* Commonly used extensions are installed and enabled (gd, mysqli, pdo_mysql, opcache) (Some of the frequently used libraries like mbstring, iconv, curl, dom, libxml, json, openssl, pcre, PDO, pdo_sqlite, sqlite3, XML Parser, SimpleXML are already included in PHP by default)
+* Extra extensions are installed and enabled in latest-extras image (bcmath, gmp, bz2, zip, imap, soap, sockets, shmop, xmlrpc, exif, apcu, imagick, redis)
+* ssmtp for mail relay is included
 
 ## Supported tags
 

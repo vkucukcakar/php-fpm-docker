@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.6.0
+
+- Fixed ImageMagick
+- Added support for GMP extension in Dockerfile-extras
+- Removed pdo, mbstring, iconv extensions from builds as they are already included in PHP 7.4
+- Slightly improved builds
+
 ## v1.5.0
 
 - Removed SERVER_INTERNAL_HOSTNAME and SERVER_INTERNAL_IP (Please use network aliases for your server container)

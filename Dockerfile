@@ -34,15 +34,17 @@ RUN mkdir -p /data/opcache \
     && chown -R www-data:www-data /data/opcache \
     && chmod -R 774 /data/opcache
 
-# Install/enable common php extensions: gd iconv mbstring mysqli pdo pdo_mysql
+# Already included in PHP by default (php -m) : mbstring, iconv, curl, dom, libxml, json, openssl, pcre, PDO, pdo_sqlite, sqlite3, XML Parser, SimpleXML
+
+# Install/enable common php extensions: gd mysqli pdo_mysql
 RUN apk add --update \
         freetype-dev \
         libjpeg-turbo-dev \
         libpng-dev \
-        oniguruma-dev \
-    && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
+    #&& docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && NPROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) \
-    && docker-php-ext-install -j${NPROC} gd iconv mbstring mysqli pdo pdo_mysql \
+    && docker-php-ext-install -j${NPROC} gd mysqli pdo_mysql \
     && docker-php-ext-enable opcache.so \
     && rm -rf /var/cache/apk/*
 
