@@ -35,14 +35,14 @@ PHP-FPM Docker image with automatic configuration file creation and export
 
 ## Caveats
 
-* Automatic configuration, creates configuration files using the supported environment variables 
+* Automatic configuration, creates configuration files using the supported environment variables
   unless they already exist at /configurations directory. These are well-commented configuration files
-  that you can edit according to your needs and make them persistent by mounting /configurations directory 
-  to a location on host. If you need to re-create them using the environment variables, then you must 
+  that you can edit according to your needs and make them persistent by mounting /configurations directory
+  to a location on host. If you need to re-create them using the environment variables, then you must
   delete the old ones. This is all by design.
-  
-* Configuration templates for extensions in alpine-extras image are not ready currently. 
-  
+
+* Configuration templates for extensions in alpine-extras image are not ready currently.
+
 * There is a working Docker Compose example project which you can see vkucukcakar/php-fpm image in action: [lemp-stack-compose](https://github.com/vkucukcakar/lemp-stack-compose )
 
 ## Notice
